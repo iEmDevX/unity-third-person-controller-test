@@ -58,6 +58,7 @@
     <Compile Include="Assets/Character/Player/PlayerControls.cs" />
     <Compile Include="Assets/Character/Player/InputManager.cs" />
     <Compile Include="Assets/Character/Player/AnimatorManager.cs" />
+    <Compile Include="Assets/Camera/CameraManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
