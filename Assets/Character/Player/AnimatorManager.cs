@@ -8,6 +8,9 @@ public class AnimatorManager : MonoBehaviour
     [SerializeField] int horizontal;
     [SerializeField] int vertical;
 
+    private float snappedVertical = 0f;
+    private float snapppedHorizontal = 0f;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -15,17 +18,18 @@ public class AnimatorManager : MonoBehaviour
         vertical = Animator.StringToHash("Vertical");
     }
 
-    public void UpdateAnimatorValues(float horizontalMovment, float verticalMovement)
+    public void UpdateAnimatorValues(float horizontalMovment, float verticalMovement, LocomotionInput locomotionInput)
     {
-        SetFloatHorizontal(horizontalMovment);
-        SetFloatVertical(verticalMovement);
-    }
-
-    private void SetFloatVertical(float verticalMovement)
-    {
-        float snappedVertical;
         // Snapped Vertical
-        if (verticalMovement > 0 && verticalMovement < 0.55f)
+        if (locomotionInput.IsSprinting)
+        {
+            snappedVertical = 2f;
+        }
+        else if (locomotionInput.IsWarking)
+        {
+            snappedVertical = 0.25f;
+        }
+        else if (verticalMovement > 0 && verticalMovement < 0.55f)
         {
             snappedVertical = 0.5f;
         }
@@ -45,17 +49,17 @@ public class AnimatorManager : MonoBehaviour
         {
             snappedVertical = 0;
         }
+        // Snappped Horizontal
 
-
-        animator.SetFloat(vertical, snappedVertical, 0.1f, Time.deltaTime);
-    }
-
-    // Snappped Horizontal
-    private void SetFloatHorizontal(float horizontalMovment)
-    {
-        float snapppedHorizontal;
-
-        if (horizontalMovment > 0 && horizontalMovment < 0.55f)
+        if (locomotionInput.IsSprinting)
+        {
+            snapppedHorizontal = horizontalMovment;
+        }
+        else if (locomotionInput.IsWarking)
+        {
+            snapppedHorizontal = 0.25f;
+        }
+        else if (horizontalMovment > 0 && horizontalMovment < 0.55f)
         {
             snapppedHorizontal = 0.5f;
         }
@@ -75,6 +79,9 @@ public class AnimatorManager : MonoBehaviour
         {
             snapppedHorizontal = 0;
         }
+
         animator.SetFloat(horizontal, snapppedHorizontal, 0.1f, Time.deltaTime);
+        animator.SetFloat(vertical, snappedVertical, 0.1f, Time.deltaTime);
     }
+
 }

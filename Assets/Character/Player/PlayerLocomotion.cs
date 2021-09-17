@@ -1,11 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerLocomotion : MonoBehaviour
 {
-    [SerializeField] float movementSpeed = 7f;
-    [SerializeField] float rotationSpeed = 20f;
+
+    [Header("Movement Speeds")]
+    [SerializeField] float warkingSpeed = 1.5f;
+    [SerializeField] float runningSpeed = 5f;
+    [SerializeField] float sprintingSpeed = 7f;
+    [SerializeField] float rotationSpeed = 15f;
+
+
+    public bool IsSprinting
+    { get; set; }
+    public bool IsWarking
+    { get; set; }
+
 
     InputManager inputManager;
     Vector3 moveDirection;
@@ -31,7 +43,26 @@ public class PlayerLocomotion : MonoBehaviour
         moveDirection = moveDirection + cameraObject.right * inputManager.horizontalInput;
         moveDirection.Normalize();
         moveDirection.y = 0;
-        moveDirection = moveDirection * movementSpeed;
+
+        if (IsWarking)
+        {
+            moveDirection = moveDirection * warkingSpeed;
+        }
+        else if (IsSprinting)
+        {
+            moveDirection = moveDirection * sprintingSpeed;
+        }
+        else if (inputManager.moveAnount >= 0.5f)
+        {
+            moveDirection = moveDirection * runningSpeed;
+        }
+
+        else
+        {
+            moveDirection = moveDirection * warkingSpeed;
+        }
+
+
 
         Vector3 movementVelocity = moveDirection;
         playerRigidbody.velocity = movementVelocity;

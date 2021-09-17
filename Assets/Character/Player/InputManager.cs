@@ -10,16 +10,22 @@ public class InputManager : MonoBehaviour
 
     private PlayerControls playerControls;
     private AnimatorManager animatorManager;
+    private PlayerLocomotion playerLocomotion;
+
+    public float moveAnount;
 
     public float cameraInputX;
     public float cameraInputY;
     public float verticalInput;
     public float horizontalInput;
 
-    private float moveAnount;
+    private bool isSprintingInput;
+    private bool isWarkingInput;
+
 
     private void Awake()
     {
+        playerLocomotion = GetComponent<PlayerLocomotion>();
         animatorManager = GetComponent<AnimatorManager>();
     }
 
@@ -31,6 +37,11 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerMovement.Movement.performed += i => movementInput = i.ReadValue<Vector2>();
             playerControls.PlayerMovement.Camera.performed += i => cameraInput = i.ReadValue<Vector2>();
 
+            playerControls.PlayerActions.Sprinting.performed += i => isSprintingInput = true;
+            playerControls.PlayerActions.Sprinting.canceled += i => isSprintingInput = false;
+
+            playerControls.PlayerActions.Walking.performed += i => isWarkingInput = true;
+            playerControls.PlayerActions.Walking.canceled += i => isWarkingInput = false;
         }
         playerControls.Enable();
     }
@@ -40,15 +51,11 @@ public class InputManager : MonoBehaviour
         playerControls.Disable();
     }
 
-    private void Update()
-    {
-        //movementInput.x = playerControls.PlayerMovement.Movement.ReadValue<Vector2>().x;
-        //movementInput.y = playerControls.PlayerMovement.Movement.ReadValue<Vector2>().y;
-    }
-
     public void HandleAllInput()
     {
         HandleMovementInput();
+        HandleSprintingInput();
+        HandleWarkingInput();
         // HandleJumpInput
         // HandleRunIActionnput
         // HandleActionInput
@@ -64,7 +71,45 @@ public class InputManager : MonoBehaviour
         cameraInputY = cameraInput.y;
 
         moveAnount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
-        animatorManager.UpdateAnimatorValues(0, moveAnount);
+
+        var locomotionInput = new LocomotionInput();
+        locomotionInput.IsSprinting = playerLocomotion.IsSprinting;
+        locomotionInput.IsWarking = playerLocomotion.IsWarking;
+
+        animatorManager.UpdateAnimatorValues(0, moveAnount, locomotionInput);
     }
 
-   }
+    private void HandleSprintingInput()
+    {
+        if (isSprintingInput && moveAnount > 0.5f)
+        {
+            playerLocomotion.IsSprinting = true;
+        }
+        else
+        {
+            playerLocomotion.IsSprinting = false;
+        }
+    }
+
+    private void HandleWarkingInput()
+    {
+        if (isWarkingInput && !isSprintingInput && moveAnount > 0.5f)
+        {
+            playerLocomotion.IsWarking = true;
+        }
+        else
+        {
+            playerLocomotion.IsWarking = false;
+        }
+    }
+
+}
+
+public class LocomotionInput
+{
+    public bool IsSprinting
+    { get; set; }
+
+    public bool IsWarking
+    { get; set; }
+}

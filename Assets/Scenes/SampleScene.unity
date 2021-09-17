@@ -893,7 +893,7 @@ MonoBehaviour:
     m_Bits: 65
   cameraCollisionOffset: 0.2
   minimumCollisionOffset: 0.2
-  cameraCollisionRadius: 2
+  cameraCollisionRadius: 0.2
   cameraFollowSpeed: 0.2
   cameraLookSpeed: 2
   cameraPivotSpeed: 2

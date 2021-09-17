@@ -6,6 +6,7 @@
 - Camera Follow Player
 - Mouse rotation camera
 - Handle Camera Collision
+- w+shift -> sprint | w+c walk
 
 > reference from Sebastian Graves - https://www.youtube.com/channel/UCzgvT3r-o8-Qqt9O3K_PHuA
 
