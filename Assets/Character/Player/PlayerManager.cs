@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    InputManager inputManager;
-    CameraManager cameraManager;
-    PlayerLocomotion playerLocomotion;
+    private Animator animator;
+    private InputManager inputManager;
+    private CameraManager cameraManager;
+    private PlayerLocomotion playerLocomotion;
+
+    [SerializeField] public bool isInteracting { get; set; }
 
     private void Awake()
     {
         inputManager = GetComponent<InputManager>();
         cameraManager = FindObjectOfType<CameraManager>();
         playerLocomotion = GetComponent<PlayerLocomotion>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -28,5 +32,6 @@ public class PlayerManager : MonoBehaviour
     private void LateUpdate()
     {
         cameraManager.HandleAllCameraMovement();
+        isInteracting = animator.GetBool("isInteracting");
     }
 }

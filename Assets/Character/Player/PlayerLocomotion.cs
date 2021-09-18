@@ -13,26 +13,41 @@ public class PlayerLocomotion : MonoBehaviour
     [SerializeField] float rotationSpeed = 15f;
 
 
-    public bool IsSprinting
-    { get; set; }
-    public bool IsWarking
-    { get; set; }
+    [Header("Movement Flag")]
+    [SerializeField] public bool IsSprinting;
+    [SerializeField] public bool IsWarking;
+    [SerializeField] public bool isGrounded;
+
+    [Header("Falling")]
+    [SerializeField] float inAirTimer = 0f;
+    [SerializeField] float leapingVelocity = 3;
+    [SerializeField] float fallingVelocity = 33;
+    [SerializeField] LayerMask goundLayer;
+    [SerializeField] float raycastHeightOffset = 0.5f;
 
 
-    InputManager inputManager;
-    Vector3 moveDirection;
-    Transform cameraObject;
-    Rigidbody playerRigidbody;
+
+    private InputManager inputManager;
+    private Vector3 moveDirection;
+    private Transform cameraObject;
+    private Rigidbody playerRigidbody;
+    private PlayerManager playerManager;
+    private AnimatorManager animatorManager;
+
 
     private void Awake()
     {
         inputManager = GetComponent<InputManager>();
         playerRigidbody = GetComponent<Rigidbody>();
+        playerManager = GetComponent<PlayerManager>();
+        animatorManager = GetComponent<AnimatorManager>();
         cameraObject = Camera.main.transform;
     }
 
     public void HandleAllMovement()
     {
+        HandleFallingAndLanding();
+        if (playerManager.isInteracting) return;
         HandleMovement();
         HandleRotation();
     }
@@ -86,5 +101,37 @@ public class PlayerLocomotion : MonoBehaviour
 
         transform.rotation = playerRotaion;
 
+    }
+
+    private void HandleFallingAndLanding()
+    {
+        RaycastHit hit;
+        Vector3 raycastOrigin = transform.position;
+        raycastOrigin.y = raycastOrigin.y + raycastHeightOffset;
+        if (!isGrounded)
+        {
+            if (!playerManager.isInteracting)
+            {
+                animatorManager.PlayTargetAnimation("Falling", true);
+            }
+            inAirTimer += Time.deltaTime;
+            playerRigidbody.AddForce(transform.forward * leapingVelocity);
+            playerRigidbody.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
+
+        }
+        if (Physics.SphereCast(raycastOrigin, 0.2f, -Vector3.up, out hit, goundLayer))
+        {
+            if (!isGrounded && playerManager.isInteracting)
+            {
+                animatorManager.PlayTargetAnimation("Landing", true);
+            }
+
+            inAirTimer = 0f;
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+        }
     }
 }
