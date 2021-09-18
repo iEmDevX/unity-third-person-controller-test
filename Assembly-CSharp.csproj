@@ -53,13 +53,14 @@
     <UnityVersion>2020.3.18f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets/Character/Player/PlayerManager.cs" />
-    <Compile Include="Assets/Character/Player/PlayerLocomotion.cs" />
-    <Compile Include="Assets/Character/Player/PlayerControls.cs" />
-    <Compile Include="Assets/Character/Player/InputManager.cs" />
-    <Compile Include="Assets/Character/Player/AnimatorManager.cs" />
     <Compile Include="Assets/Camera/CameraManager.cs" />
-    <Compile Include="Assets/ResetBool.cs" />
+    <Compile Include="Assets/Character/Player/Script/AnimatorManager.cs" />
+    <Compile Include="Assets/Character/Player/Script/PlayerManager.cs" />
+    <Compile Include="Assets/Character/Player/Script/PlayerLocomotion.cs" />
+    <Compile Include="Assets/Character/Player/Script/ResetBool.cs" />
+    <Compile Include="Assets/Character/Player/Script/PlayerControls.cs" />
+    <Compile Include="Assets/Character/Player/Script/InputManager.cs" />
+    <Compile Include="Assets/Character/Player/Script/ResetJumping.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
