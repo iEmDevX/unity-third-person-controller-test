@@ -119,7 +119,9 @@ public class PlayerLocomotion : MonoBehaviour
     {
         RaycastHit hit;
         Vector3 raycastOrigin = transform.position;
+        Vector3 targetPosition = transform.position;
         raycastOrigin.y = raycastOrigin.y + raycastHeightOffset;
+
         if (!isGrounded && !isJumping)
         {
             if (!playerManager.isInteracting)
@@ -133,17 +135,31 @@ public class PlayerLocomotion : MonoBehaviour
         }
         if (Physics.SphereCast(raycastOrigin, 0.2f, -Vector3.up, out hit, goundLayer))
         {
-            if (!isGrounded && playerManager.isInteracting)
+            if (!isGrounded && !playerManager.isInteracting)
             {
                 animatorManager.PlayTargetAnimation("Landing", true);
             }
 
+            Vector3 raycastHitPoint = hit.point;
+            targetPosition.y = raycastHitPoint.y;
             inAirTimer = 0f;
             isGrounded = true;
         }
         else
         {
             isGrounded = false;
+        }
+
+        if (isGrounded && !isJumping)
+        {
+            if (playerManager.isInteracting || inputManager.moveAnount > 0)
+            {
+                transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime / 0.1f);
+            }
+            else
+            {
+                transform.position = targetPosition;
+            }
         }
     }
 

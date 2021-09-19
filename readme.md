@@ -9,6 +9,7 @@
 - w+shift -> sprint | w+c walk
 - add falling and landing (animation, physic)
 - add space to jump
+- walk down stairs
 
 > reference from Sebastian Graves - https://www.youtube.com/channel/UCzgvT3r-o8-Qqt9O3K_PHuA
 
